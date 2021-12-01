@@ -32,15 +32,14 @@ while True :
 
     while True :
         jogadaCliente = int(socketCliente.recv(100)) #4 r
-
-        if jogadaCliente == 4 :
-            break
+        print(jogadaCliente)
 
         jogadaServidor = random.randrange(1,3)
 
         escolhaCliente = ""
         escolhaServidor = ""
         resultado = 0 #0 - empate | 1 - cliente | 2 - servidor
+        resultaTexto = ""
 
         if jogadaCliente == 1 :
             escolhaCliente = 'Pedra'
@@ -85,7 +84,7 @@ while True :
                 resultado = 2
 
         else :
-            escolhaCliente = 'Pedra'
+            escolhaCliente = 'Tesoura'
 
             if jogadaServidor == 1 : #Jogador perdeu
                 escolhaServidor = 'Pedra'
@@ -107,18 +106,26 @@ while True :
 
         mensagemPrint = 'As escolhas foram: \nServidor = ' + escolhaServidor + ' | Cliente = ' + escolhaCliente + '\nResultado: '
 
+        if resultado == 1 :
+            resultaTexto = "Cliente"
+        elif resultado == 2 :
+            resultaTexto = "Servidor"
+
         if resultado == 0 :
             mensagemPrint += 'Tivemos um empate!\n'
         else :
-            mensagemPrint += 'O ganhador foi: ' + str(resultado) + '.\n'
+            mensagemPrint += 'O ganhador foi: ' + resultaTexto + '.\n'
 
-        mensagemPrint += 'Pontuação cliente: ' + str(pontuacaoCliente) + ' | Pontuação servidor: ' + str(pontuacaoServidor) + '\n'
+        mensagemPrint += 'Pontuacao cliente: ' + str(pontuacaoCliente) + ' | Pontuacao servidor: ' + str(pontuacaoServidor) + '\n'
 
         print(mensagemPrint)
+
+        with open('ganhador.txt','w') as arq:
+            arq.write(mensagemPrint+'\n')
 
         mensagemEnviada = str(resultado) + '|' + str(pontuacaoCliente) + '|' + str(pontuacaoServidor) + '|' + str(jogadaCliente) + '|' + str(jogadaServidor)
 
         socketCliente.send(mensagemEnviada.encode()) #4 e
 
-    print('Conexao finalizada com o cliente  ' , enderecoCliente)
-    socketCliente.close()
+print('Conexao finalizada com o cliente  ' , enderecoCliente)
+socketCliente.close()
